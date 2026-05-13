@@ -15,6 +15,7 @@ import {
   loadingClass,
 } from "../styles/common";
 import { useAuth } from "../store/authStore";
+import axiosInstance from "../axiosInstance";
 
 function WriteArticles() {
   const navigate = useNavigate();
@@ -38,7 +39,7 @@ function WriteArticles() {
       //set loading true
       setLoading(true);
       //make POST req to save new article
-      let res = await axios.post("http://localhost:4000/author-api/article", articleObj, { withCredentials: true });
+      let res = await axiosInstance.post("/author-api/article", articleObj, { withCredentials: true });
       //navigate to AuthorArticles
       if (res.status === 201) {
         toast.success("Article published successfully")

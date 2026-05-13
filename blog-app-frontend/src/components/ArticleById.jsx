@@ -27,6 +27,7 @@ import {
   commentText,
 } from "../styles/common.js";
 import { useForm } from "react-hook-form";
+import axiosInstance from "../axiosInstance.js";
 
 function ArticleByID() {
   const { id } = useParams();
@@ -50,7 +51,7 @@ function ArticleByID() {
       setLoading(true);
 
       try {
-        const res = await axios.get(`http://localhost:4000/user-api/article/${id}`, { withCredentials: true });
+        const res = await axiosInstance.get(`/user-api/article/${id}`);
 
         setArticle(res.data.payload);
       } catch (err) {
@@ -79,10 +80,9 @@ function ArticleByID() {
     if (!window.confirm(confirmMsg)) return;
 
     try {
-      const res = await axios.patch(
-        "http://localhost:4000/author-api/articles",
+      const res = await axiosInstance.patch(
+        "/author-api/articles",
         { articleId: article._id, isArticleActive: newStatus },
-        { withCredentials: true },
       );
 
       console.log("SUCCESS:", res.data);
@@ -114,7 +114,7 @@ function ArticleByID() {
     //add artcileId
     commentObj.articleId = article._id;
     console.log(commentObj);
-    let res = await axios.put("http://localhost:4000/user-api/articles", commentObj, { withCredentials: true });
+    let res = await axiosInstance.put("/user-api/articles", commentObj);
     if (res.status === 200) {
       
       setArticle(res.data.payload);
