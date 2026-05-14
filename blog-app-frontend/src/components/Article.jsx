@@ -11,7 +11,6 @@ import {
   bodyText,
   errorClass,
 } from "../styles/common";
-import axiosInstance from "../axiosInstance";
 
 function Articles() {
   const [articles, setArticles] = useState([]);
@@ -21,7 +20,7 @@ function Articles() {
   useEffect(() => {
     const fetchArticles = async () => {
       try {
-        const res = await axiosInstance.get("/auth/articles");
+        const res = await axios.get("/auth/articles");
         setArticles(res.data);
       } catch (err) {
         console.log("Error fetching articles:", err);
