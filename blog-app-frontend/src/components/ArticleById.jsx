@@ -27,7 +27,6 @@ import {
   commentText,
 } from "../styles/common.js";
 import { useForm } from "react-hook-form";
-import axiosInstance from "../axiosInstance.js";
 
 function ArticleByID() {
   const { id } = useParams();
@@ -36,22 +35,19 @@ function ArticleByID() {
   const { register, handleSubmit } = useForm();
 
   const user = useAuth((state) => state.currentUser);
-  console.log("user ",user)
 
   const [article, setArticle] = useState(location.state || null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    //if aticle is transferred, then use it
     if (article) return;
 
-    //otherwise, make api req to read that article by id
     const getArticle = async () => {
       setLoading(true);
 
       try {
-        const res = await axiosInstance.get(`/user-api/article/${id}`);
+        const res = await axios.get(`/user-api/article/${id}`, { withCredentials: true });
 
         setArticle(res.data.payload);
       } catch (err) {
@@ -80,16 +76,17 @@ function ArticleByID() {
     if (!window.confirm(confirmMsg)) return;
 
     try {
-      const res = await axiosInstance.patch(
-        "/author-api/articles",
-        { articleId: article._id, isArticleActive: newStatus },
+      const res = await axios.patch(
+        `/author-api/articles/${id}/status`,
+        { isArticleActive: newStatus },
+        { withCredentials: true },
       );
 
       console.log("SUCCESS:", res.data);
 
       setArticle(res.data.payload);
 
-      //  toast.success(res.data.message);
+      toast.success(res.data.message);
     } catch (err) {
       console.log("ERROR:", err.response);
 
@@ -110,19 +107,15 @@ function ArticleByID() {
 
   //post comment by user
   const addComment = async (commentObj) => {
-    //{comment:"user comment"}
     //add artcileId
     commentObj.articleId = article._id;
     console.log(commentObj);
-    let res = await axiosInstance.put("/user-api/articles", commentObj);
+    let res = await axios.put("/user-api/articles", commentObj, { withCredentials: true });
     if (res.status === 200) {
-      
+      toast.success(res.data.message);
       setArticle(res.data.payload);
     }
   };
-
- // console.log("article",article)
-
 
   if (loading) return <p className={loadingClass}>Loading article...</p>;
   if (error) return <p className={errorClass}>{error}</p>;
@@ -137,7 +130,7 @@ function ArticleByID() {
         <h1 className={`${articleMainTitle} uppercase`}>{article.title}</h1>
 
         <div className={articleAuthorRow}>
-          <div className={authorInfo}>✍️ {user?.role}</div>
+          <div className={authorInfo}>✍️ {article.author?.firstName || "Author"}</div>
 
           <div>{formatDate(article.createdAt)}</div>
         </div>
