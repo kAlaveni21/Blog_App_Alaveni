@@ -52,6 +52,8 @@ function Register() {
       let res = await axiosInstance.post("/auth/users", formData);
 
       if (res.status === 201) {
+        //show success alert
+        alert("Registered successfully!");
         //navigate to Login
         navigate("/login");
       }
