@@ -15,7 +15,6 @@ import {
   articleStatusActive,
   articleStatusDeleted,
 } from "../styles/common";
-import axiosInstance from "../axiosInstance";
 
 function AuthorArticles() {
   const navigate = useNavigate();
@@ -34,7 +33,7 @@ function AuthorArticles() {
       try {
         setLoading(true);
         //read articles of current author
-        let res = await axiosInstance.get("/author-api/articles", { withCredentials: true });
+        let res = await axios.get("/author-api/articles", { withCredentials: true });
         if (res.status === 200) {
           setArticles(res.data.payload);
         }
